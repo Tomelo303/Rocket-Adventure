@@ -3,17 +3,15 @@
 
 int main(int argc, char* argv[])
 {
-	Game game("My game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, false, true);
-
+	Game game("Rocket Adventure", SDL_WINDOWPOS_CENTERED, 32, false, false, false);
+	
 	// Game loop
-	while (game.running())
+	while (game.isRunning())
 	{
 		game.handleEvents();
 		game.update();
 		game.render();
 	}
-
-	game.clean();
 
 	return 0;
 }

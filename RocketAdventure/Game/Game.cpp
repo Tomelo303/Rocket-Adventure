@@ -1,49 +1,61 @@
 #include "Game.h"
 
-#include <iostream>
 
-Game::Game(const char* title, int Xpos, int Ypos, int width, int height, bool fullscreen, bool resizable)
+Game::Game(const char* title, int posX, int posY, bool fullscreen, bool resizable, bool borderless)
 {
-	int flags[2] = { 0, 0 };
+	int flags[3] = { 0, 0, 0 };
 
 	if (fullscreen)
 	{
-		flags[0] = SDL_WINDOW_FULLSCREEN;
+		flags[0] = SDL_WindowFlags::SDL_WINDOW_FULLSCREEN;
 	}
 
 	if (resizable)
 	{
-		flags[1] = SDL_WINDOW_RESIZABLE;
+		flags[1] = SDL_WindowFlags::SDL_WINDOW_RESIZABLE;
 	}
 
-	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
+	if (borderless)
+	{
+		flags[2] = SDL_WindowFlags::SDL_WINDOW_BORDERLESS;
+	}
+
+	if (SDL_Init(SDL_INIT_EVERYTHING) == 0 && IMG_Init(IMG_INIT_PNG) == IMG_INIT_PNG)
 	{
 		std::cout << "Subsystems initialised.\n";
 
-		window = SDL_CreateWindow(title, Xpos, Ypos, width, height, flags[0] | flags[1]);
-		if (window)
+		_window = SDL_CreateWindow(title, posX, posY, _width, _height, flags[0] | flags[1] | flags[2]);
+		if (_window)
 		{
 			std::cout << "Window created.\n";
 		}
 
-		renderer = SDL_CreateRenderer(window, -1, 0);
-		if (renderer)
+		_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
+		if (_renderer)
 		{
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+			SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
 			std::cout << "Renderer created.\n";
 		}
 
-		isRunning = true;
+		_running = true;
 	}
 	else
 	{
-		isRunning = false;
+		_running = false;
 	}
+	
+	// Creating all textures
+	_playerTexture = Game::createTexture("../Assets/rocket0.png");
 }
 
 Game::~Game()
 {
-	std::cout << "Game class destroyed.\n";
+	SDL_DestroyWindow(_window);
+	SDL_DestroyRenderer(_renderer);
+	SDL_DestroyTexture(_playerTexture);
+	SDL_Quit();
+	IMG_Quit();
+	std::cout << "Game closed.\n";
 }
 
 void Game::handleEvents()
@@ -53,25 +65,41 @@ void Game::handleEvents()
 
 	switch (event.type)
 	{
-	case SDL_QUIT:
-		isRunning = false;
-		break;
+	  case SDL_QUIT:
+		  _running = false;
+		  break;
 	}
 }
 void Game::update()
 {
-	std::cout << counter++ << "\n";
+
 }
 void Game::render()
 {
-	SDL_RenderClear(renderer);
-	// Stuff that needs to be rendered goes here
-	SDL_RenderPresent(renderer);
+	SDL_RenderClear(_renderer);
+	SDL_Rect playerRect = { (_width - 65)/2 , _height - 100, 65, 100 };
+	SDL_RenderCopy(_renderer, _playerTexture, NULL, &playerRect);
+	SDL_RenderPresent(_renderer);
 }
-void Game::clean()
+
+SDL_Texture* Game::createTexture(const char* fileName)
 {
-	SDL_DestroyWindow(window);
-	SDL_DestroyRenderer(renderer);
-	SDL_Quit();
-	std::cout << "Game cleaned.\n";
+	SDL_Surface* surface = IMG_Load(fileName);
+	if (surface)
+	{
+		SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
+		if (texture)
+		{
+			return texture;
+		}
+		else
+		{
+			std::cout << "Problem loading texture: " << SDL_GetError() << "\n";
+		}
+		SDL_FreeSurface(surface);
+	}
+	else
+	{
+		std::cout << "Problem loading surface: " << SDL_GetError() << "\n";
+	}
 }
