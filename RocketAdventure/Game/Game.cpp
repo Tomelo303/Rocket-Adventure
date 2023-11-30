@@ -1,30 +1,13 @@
 #include "Game.h"
 
 
-Game::Game(const char* title, int posX, int posY, bool fullscreen, bool resizable, bool borderless)
+Game::Game(const char* title, int posX, int posY)
 {
-	int flags[3] = { 0, 0, 0 };
-
-	if (fullscreen)
-	{
-		flags[0] = SDL_WindowFlags::SDL_WINDOW_FULLSCREEN;
-	}
-
-	if (resizable)
-	{
-		flags[1] = SDL_WindowFlags::SDL_WINDOW_RESIZABLE;
-	}
-
-	if (borderless)
-	{
-		flags[2] = SDL_WindowFlags::SDL_WINDOW_BORDERLESS;
-	}
-
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0 && IMG_Init(IMG_INIT_PNG) == IMG_INIT_PNG)
 	{
 		std::cout << "Subsystems initialised.\n";
 
-		_window = SDL_CreateWindow(title, posX, posY, _width, _height, flags[0] | flags[1] | flags[2]);
+		_window = SDL_CreateWindow(title, posX, posY, _width, _height, 0);
 		if (_window)
 		{
 			std::cout << "Window created.\n";
@@ -37,22 +20,21 @@ Game::Game(const char* title, int posX, int posY, bool fullscreen, bool resizabl
 			std::cout << "Renderer created.\n";
 		}
 
+		// Creating all textures
+		player.applyTexture(Game::createTexture("../Assets/rocket0.png"));
+
 		_running = true;
 	}
 	else
 	{
 		_running = false;
 	}
-	
-	// Creating all textures
-	_playerTexture = Game::createTexture("../Assets/rocket0.png");
 }
 
 Game::~Game()
 {
 	SDL_DestroyWindow(_window);
 	SDL_DestroyRenderer(_renderer);
-	SDL_DestroyTexture(_playerTexture);
 	SDL_Quit();
 	IMG_Quit();
 	std::cout << "Game closed.\n";
@@ -70,15 +52,27 @@ void Game::handleEvents()
 		  break;
 	}
 }
+
 void Game::update()
 {
-
+	if (player.y() > 0)
+	{
+		player.move(0, -1);
+		std::cout << "Player is on y = " << player.y() << "\n";
+	}
+	
+	if (player.y() < 0)
+	{
+		player.setPos(player.x(), 0);
+		std::cout << "Player moved to (" << player.x() << ", " << player.y() << ") coordinates.\n";
+	}
 }
+
 void Game::render()
 {
 	SDL_RenderClear(_renderer);
-	SDL_Rect playerRect = { (_width - 65)/2 , _height - 100, 65, 100 };
-	SDL_RenderCopy(_renderer, _playerTexture, NULL, &playerRect);
+	SDL_Rect pRect = player.rect();
+	SDL_RenderCopy(_renderer, player.texture(), NULL, &pRect);
 	SDL_RenderPresent(_renderer);
 }
 
@@ -90,13 +84,14 @@ SDL_Texture* Game::createTexture(const char* fileName)
 		SDL_Texture* texture = SDL_CreateTextureFromSurface(_renderer, surface);
 		if (texture)
 		{
+			SDL_FreeSurface(surface);
 			return texture;
 		}
 		else
 		{
+			SDL_FreeSurface(surface);
 			std::cout << "Problem loading texture: " << SDL_GetError() << "\n";
 		}
-		SDL_FreeSurface(surface);
 	}
 	else
 	{
