@@ -3,8 +3,7 @@
 
 #include <iostream>
 #include <SDL.h>
-#include <SDL_image.h>
-#include "../Player/Player.h"
+
 
 class Game
 {
@@ -17,15 +16,12 @@ class Game
 	void render();        // Method for displaying the changes on the screen
 	bool isRunning() const { return _running; }
 
-  private:
-	SDL_Texture* createTexture(const char* fileName);  // Method for creating a texture which is only used by other methods
-	
+  private:	
 	const int _width = 800;
 	const int _height = 1000;
 	bool _running = false;
 	SDL_Window* _window = nullptr;
 	SDL_Renderer* _renderer = nullptr;
-	Player player = Player(_width/2, _height);
 };
 
 #endif // GAME_H

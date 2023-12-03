@@ -1,10 +1,12 @@
 #include "Player.h"
+#include <iostream>
 
-Player::Player(int posX, int posY)
+
+Player::Player(const char* textureFile, SDL_Renderer* renderer)
 {
-	_posX = posX - _width / 2;
-	_posY = posY - _height;
-	std::cout << "Player initialised.\n";
+	G_renderer = renderer;
+	_playerTexture = TextureHandler::createTexture(textureFile, renderer);
+	std::cout << "Player initialized.\n";
 }
 
 Player::~Player()
@@ -17,6 +19,6 @@ void Player::move(int x, int y)
 {
 	_posX += x * _speed;
 	_posY += y * _speed;
-	_playerRect.x = _posX;
-	_playerRect.y = _posY;
+	_destinationRect.x = _posX;
+	_destinationRect.y = _posY;
 }

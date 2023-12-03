@@ -9,6 +9,8 @@ add_executable (RocketAdventure
   "Game/Game.h"
   "Player/Player.cpp"
   "Player/Player.h"
+  "TextureHandler/TextureHandler.h"
+  "TextureHandler/TextureHandler.cpp"
 )
 
 # Link libraries so they are visible for the project
