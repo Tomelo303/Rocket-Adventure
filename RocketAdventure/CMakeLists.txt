@@ -5,13 +5,18 @@ find_package(SDL2_image REQUIRED)
 # Add source to this project's executable.
 add_executable (RocketAdventure
   "main.cpp"
-  "Game/Game.cpp"
   "Game/Game.h"
-  "Player/Player.cpp"
+  "Game/Game.cpp"
+  "Entity/Entity.h"
+  "Entity/Entity.cpp"
   "Player/Player.h"
+  "Player/Player.cpp"
+  "Obstacle/Obstacle.cpp"
+  "Obstacle/Obstacle.h"
   "TextureHandler/TextureHandler.h"
   "TextureHandler/TextureHandler.cpp"
-)
+  "Vector2/Vector2.h"
+  "Vector2/Vector2.cpp")
 
 # Link libraries so they are visible for the project
 target_link_libraries(RocketAdventure SDL2::SDL2 SDL2::SDL2main)

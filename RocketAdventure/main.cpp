@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 
 		// Measuring the time it took to finish the frame
 		frameTime = SDL_GetTicks() - frameStart;
-
+		
 		// Delaying the frame if it took less time than is set by frameDelay
 		if (frameDelay > frameTime)
 		{

@@ -1,7 +1,8 @@
 #ifndef TEXTUREHANDLER_H
 #define TEXTUREHANDLER_H
 
-#include <SDL_image.h>
+#include "../Game/Game.h"
+
 
 class TextureHandler
 {
@@ -9,7 +10,7 @@ class TextureHandler
 	TextureHandler() {};
 	~TextureHandler() {};
 
-	static SDL_Texture* createTexture(const char* fileName, SDL_Renderer* renderer);  // Method for creating a texture 
+	static SDL_Texture* createTexture(const char* texturePath);
 };
 
 #endif // TEXTUREHANDLER_H

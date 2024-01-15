@@ -2,12 +2,12 @@
 #include <iostream>
 
 
-SDL_Texture* TextureHandler::createTexture(const char* fileName, SDL_Renderer* renderer)
+SDL_Texture* TextureHandler::createTexture(const char* texturePath)
 {
-	SDL_Surface* surface = IMG_Load(fileName);
+	SDL_Surface* surface = IMG_Load(texturePath);
 	if (surface)
 	{
-		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+		SDL_Texture* texture = SDL_CreateTextureFromSurface(Game::renderer, surface);
 		if (texture)
 		{
 			SDL_FreeSurface(surface);

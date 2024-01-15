@@ -1,43 +1,54 @@
 #include "Game.h"
 #include "../Player/Player.h"
+#include "../Obstacle/Obstacle.h"
+
+#include <iostream>
+
 
 Player* player;
+Obstacle* obstacle1;
+SDL_Renderer* Game::renderer = nullptr;
+SDL_Event Game::event;
 
-Game::Game(const char* title, int posX, int posY)
+Game::Game(const char* title, int x, int y)
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0 && IMG_Init(IMG_INIT_PNG) == IMG_INIT_PNG)
 	{
 		std::cout << "Subsystems initialized.\n";
 
-		_window = SDL_CreateWindow(title, posX, posY, _width, _height, 0);
-		if (_window)
+		window = SDL_CreateWindow(title, x, y, width, height, 0);
+		if (window)
 		{
 			std::cout << "Window created.\n";
 		}
 
-		_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
-		if (_renderer)
+		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+		if (renderer)
 		{
-			SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 			std::cout << "Renderer created.\n";
 		}
 
-		// Initializing a Player
-		player = new Player("../Assets/rocket0.png", _renderer);
+		std::srand(static_cast<unsigned int>(std::time(NULL)));  // Generating a seed for the rand() functions based on the time
 
-		_running = true;
+		// Initialising game entities
+		player = new Player(width / 2, height - 200);
+		obstacle1 = new Obstacle(-height);
+
+		running = true;
 	}
 	else
 	{
-		_running = false;
+		running = false;
 	}
 }
 
 Game::~Game()
 {
-	SDL_DestroyWindow(_window);
-	SDL_DestroyRenderer(_renderer);
+	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(renderer);
 	delete player;
+	delete obstacle1;
 	SDL_Quit();
 	IMG_Quit();
 	std::cout << "Game closed.\n";
@@ -45,53 +56,43 @@ Game::~Game()
 
 void Game::handleEvents()
 {
-	SDL_Event event;
 	SDL_PollEvent(&event);
 
+	// Handle events regarding the game window
 	switch (event.type)
 	{
-	  case SDL_QUIT:
-		_running = false;
+	case SDL_QUIT:  // Closing of the game window
+		running = false;
 		break;
 
-	  case SDL_KEYDOWN:
-		  switch (event.key.keysym.sym)
-		  {
-		    case SDLK_a:
-			  player->eventNum(SDLK_a);
-			  break;
-
-		    case SDLK_d:
-			  player->eventNum(SDLK_d);
-			  break;
-		  }
+	default:
+		break;
 	}
+
+	// Handle events regarding game entities
+	player->handleEvents();
 }
 
 void Game::update()
 {
-	switch (player->eventNum())
-	{
-	  case SDLK_a:
-		  player->move(-1, 0);
-		  break;
+	// Update game entities
+	player->update(frame);
+	obstacle1->update(frame);
+	
+	// Update game properties
+	if (frame == 1000000)
+		frame = 1;  // A simple way to prevent reaching max int value
+	else
+		frame++;
 
-	  case SDLK_d:
-		  player->move(1, 0);
-		  break;
-	}
-
-	if (player->x() < 0)
-		player->setPos(0, player->y());
-	else if (player->x() > _width - player->destinationRect().w)
-		player->setPos(_width - player->destinationRect().w, player->y());
+	//std::cout << "Frame #" << playerPoints << "\n";
 }
 
 void Game::render()
 {
-	SDL_RenderClear(_renderer);
-	SDL_Rect pSrcRect = player->sourceRect();
-	SDL_Rect pDstRect = player->destinationRect();
-	SDL_RenderCopy(_renderer, player->texture(), &pSrcRect, &pDstRect);
-	SDL_RenderPresent(_renderer);
+	SDL_RenderClear(renderer);
+	// Render updated entities onto the game window
+	player->render();
+	obstacle1->render();
+	SDL_RenderPresent(renderer);
 }

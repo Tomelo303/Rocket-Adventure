@@ -1,27 +1,31 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <iostream>
 #include <SDL.h>
+#include <SDL_image.h>
+
 
 
 class Game
 {
   public:
-	Game(const char* title, int posX, int posY);
+	Game(const char* title, int x, int y);
 	~Game();
 
-	void handleEvents();  // Handling user input
-	void update();        // Method for updating the state of the game, e.g. player position
-	void render();        // Method for displaying the changes on the screen
-	bool isRunning() const { return _running; }
+	void handleEvents();  // Handle user input
+	void update();        // Update the state of the game
+	void render();        // Display the changes on the screen
+	bool isRunning() const { return running; }
+
+	static SDL_Renderer* renderer;
+	static SDL_Event event;
+	static const int width = 800;	 // Width of the game window
+	static const int height = 1000;  // Height of the game window
 
   private:	
-	const int _width = 800;
-	const int _height = 1000;
-	bool _running = false;
-	SDL_Window* _window = nullptr;
-	SDL_Renderer* _renderer = nullptr;
+	SDL_Window* window = nullptr;
+	bool running = false;
+	int frame = 0;  // Number of frames that passed since the start of the game
 };
 
 #endif // GAME_H
