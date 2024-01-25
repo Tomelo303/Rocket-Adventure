@@ -16,7 +16,7 @@ add_executable (RocketAdventure
   "TextureHandler/TextureHandler.h"
   "TextureHandler/TextureHandler.cpp"
   "Vector2/Vector2.h"
-  "Vector2/Vector2.cpp")
+  "Vector2/Vector2.cpp" "CollisionHandler/CollisionHandler.cpp" "CollisionHandler/CollisionHandler.h")
 
 # Link libraries so they are visible for the project
 target_link_libraries(RocketAdventure SDL2::SDL2 SDL2::SDL2main)

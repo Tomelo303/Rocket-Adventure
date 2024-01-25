@@ -126,6 +126,11 @@ void Player::update(const int& frame)
 	stayInsideWindow();
 }
 
+void Player::handleCollision()
+{
+	// Move the player back at the start position
+}
+
 void Player::stayInsideWindow()
 {
 	if (position.y < 0)

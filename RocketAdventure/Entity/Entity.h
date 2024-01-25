@@ -13,6 +13,7 @@ class Entity
 	~Entity();
 
 	void render();  // Display the changes after an update
+	const SDL_Rect& getRect() { return destinationRect; }
 
   protected:
 	void move();  // Move Entity based on the values in velocity vector and speed variable

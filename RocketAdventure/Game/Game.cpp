@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "../CollisionHandler/CollisionHandler.h"
 #include "../Player/Player.h"
 #include "../Obstacle/Obstacle.h"
 
@@ -79,6 +80,15 @@ void Game::update()
 	player->update(frame);
 	obstacle1->update(frame);
 	
+	// Check for collisions
+	if (CollisionHandler::AABB(player->getRect(), obstacle1->getRect()))
+	{
+		player->handleCollision();
+		obstacle1->handleCollision();
+		std::cout << "Collision detected\n";
+		//running = false;  // Close the game
+	}
+
 	// Update game properties
 	if (frame == 1000000)
 		frame = 1;  // A simple way to prevent reaching max int value

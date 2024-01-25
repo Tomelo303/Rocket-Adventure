@@ -64,6 +64,11 @@ void Obstacle::update(const int& frame)
 	//std::cout << increaseSpeed << "\n";
 }
 
+void Obstacle::handleCollision()
+{
+	// Reset Obstacle's speed and texture and move back at the start height
+}
+
 void Obstacle::bounceFromWalls()
 {
 	if (position.x < 0)
