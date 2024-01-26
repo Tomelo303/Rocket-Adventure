@@ -17,7 +17,6 @@ Obstacle::Obstacle(int y)
 	ufo_tex = TextureHandler::createTexture("../Assets/ufo.png");
 
 	// Set values regarding position and texture
-	generateSpawnProperties();  // position.x, velocity.x and texture
 	position.y = y;
 	sourceRect = { 0, 0, 650, 420 };
 	destinationRect = { position.x, position.y, width, height };
@@ -93,14 +92,14 @@ void Obstacle::update(const int& frame)
 	}
 
 	// Set the turn into an UFO flag on when the game frame hits a desired value
-	if (frame == 500)
+	if (frame == 10000)
 	{
 		turnIntoUFO = true;
 		increaseSpeed = false;  // Turn this flag off to make sure the Obstacle starts with default speed as a UFO
 	}
 
 	// Resume the Obstacle's movement when the game frame hits a desired value
-	if (frame == 1500)
+	if (frame == 11000)
 	{
 		speed.x = 10;	  // Set a default in x axis speed for a UFO
 		speed.y = 4;	  // Set a default in y axis speed for a UFO
