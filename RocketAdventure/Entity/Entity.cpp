@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "../Game/Game.h"
 
 
 Entity::Entity()
@@ -17,6 +18,12 @@ void Entity::render()
 	SDL_RenderCopy(Game::renderer, texture, &sourceRect, &destinationRect);
 }
 
+void Entity::update(const int& frame)
+{} // Method ment to be overridden
+
+void Entity::handleCollision()
+{} // Method ment to be overridden
+
 void Entity::move()
 {
 	position.x += velocity.x * speed.x;
@@ -33,8 +40,7 @@ void Entity::setPos(int x, int y)
 
 void Entity::setPos(Vector2 newPos)
 {
-	position = newPos;
-	destinationRect.x = position.x;
-	destinationRect.y = position.y;
+	destinationRect.x = position.x = newPos.x;
+	destinationRect.y = position.y = newPos.y;
 }
 

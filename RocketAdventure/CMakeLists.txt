@@ -11,12 +11,17 @@ add_executable (RocketAdventure
   "Entity/Entity.cpp"
   "Player/Player.h"
   "Player/Player.cpp"
-  "Obstacle/Obstacle.cpp"
   "Obstacle/Obstacle.h"
+  "Obstacle/Obstacle.cpp"
+  "Bonus/Bonus.h"
+  "Bonus/Bonus.cpp"
   "TextureHandler/TextureHandler.h"
   "TextureHandler/TextureHandler.cpp"
+  "CollisionHandler/CollisionHandler.h"
+  "CollisionHandler/CollisionHandler.cpp"
   "Vector2/Vector2.h"
-  "Vector2/Vector2.cpp" "CollisionHandler/CollisionHandler.cpp" "CollisionHandler/CollisionHandler.h")
+  "Vector2/Vector2.cpp"
+ )
 
 # Link libraries so they are visible for the project
 target_link_libraries(RocketAdventure SDL2::SDL2 SDL2::SDL2main)

@@ -1,7 +1,6 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "../Game/Game.h"
 #include "../Vector2/Vector2.h"
 #include "../TextureHandler/TextureHandler.h"
 
@@ -13,6 +12,8 @@ class Entity
 	~Entity();
 
 	void render();  // Display the changes after an update
+	virtual void update(const int& frame);  // How the Entity should update with every game frame
+	virtual void handleCollision();			// How the Entity should update after it collided with other objects
 	const SDL_Rect& getRect() { return destinationRect; }
 
   protected:

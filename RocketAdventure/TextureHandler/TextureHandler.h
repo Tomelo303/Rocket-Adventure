@@ -1,7 +1,7 @@
 #ifndef TEXTUREHANDLER_H
 #define TEXTUREHANDLER_H
 
-#include "../Game/Game.h"
+#include "SDL_image.h"
 
 
 class TextureHandler

@@ -3,7 +3,8 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
-
+#include "../Player/Player.h"
+#include "../Obstacle/Obstacle.h"
 
 
 class Game
@@ -22,7 +23,11 @@ class Game
 	static const int width = 800;	 // Width of the game window
 	static const int height = 1000;  // Height of the game window
 
-  private:	
+  private:
+	void checkPlayerCollisionWith(Obstacle* obstacle);  // Check for a collision of Player with an Obstacle
+	//void checkPlayerCollisionWith(Bonus* bonus);  // Check for a collision of Player with a Bonus
+	inline void quitGame() { running = false; }
+
 	SDL_Window* window = nullptr;
 	bool running = false;
 	int frame = 0;  // Number of frames that passed since the start of the game

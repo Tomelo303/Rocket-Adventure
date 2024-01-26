@@ -1,7 +1,5 @@
 #include "Game.h"
 #include "../CollisionHandler/CollisionHandler.h"
-#include "../Player/Player.h"
-#include "../Obstacle/Obstacle.h"
 
 #include <iostream>
 
@@ -63,7 +61,7 @@ void Game::handleEvents()
 	switch (event.type)
 	{
 	case SDL_QUIT:  // Closing of the game window
-		running = false;
+		quitGame();
 		break;
 
 	default:
@@ -79,21 +77,11 @@ void Game::update()
 	// Update game entities
 	player->update(frame);
 	obstacle1->update(frame);
-	
-	// Check for collisions
-	if (CollisionHandler::AABB(player->getRect(), obstacle1->getRect()))
-	{
-		player->handleCollision();
-		obstacle1->handleCollision();
-		std::cout << "Collision detected\n";
-		//running = false;  // Close the game
-	}
 
-	// Update game properties
-	if (frame == 1000000)
-		frame = 1;  // A simple way to prevent reaching max int value
-	else
-		frame++;
+	// Check for collisions
+	checkPlayerCollisionWith(obstacle1);
+
+	frame++;
 
 	//std::cout << "Frame #" << playerPoints << "\n";
 }
@@ -105,4 +93,16 @@ void Game::render()
 	player->render();
 	obstacle1->render();
 	SDL_RenderPresent(renderer);
+}
+
+void Game::checkPlayerCollisionWith(Obstacle* obstacle)
+{
+	if (CollisionHandler::AABB(player->getRect(), obstacle->getRect()))
+	{
+		player->handleCollision();
+		obstacle->handleCollision();
+
+		//frame = 0;
+		//quitGame();
+	}
 }

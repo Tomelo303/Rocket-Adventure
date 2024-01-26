@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "../Game/Game.h"
 
 
 Player::Player(int x, int y)
@@ -129,6 +130,7 @@ void Player::update(const int& frame)
 void Player::handleCollision()
 {
 	// Move the player back at the start position
+	std::cout << "Player collided\n";
 }
 
 void Player::stayInsideWindow()

@@ -17,8 +17,8 @@ class Player : public Entity
 	~Player();
 
 	void handleEvents();  // Handle user input
-	void update(const int& frame);  // How the Player should update with every game frame
-	void handleCollision();  // How the Player should update after it collided with other objects
+	void update(const int& frame) override;  // How the Player should update with every game frame
+	void handleCollision() override;		 // How the Player should update after it collided with other objects
 	int getAltitude() const { return altitude; }
 
   private:
