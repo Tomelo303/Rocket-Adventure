@@ -44,3 +44,9 @@ void Entity::setPos(Vector2 newPos)
 	destinationRect.y = position.y = newPos.y;
 }
 
+void Entity::placeAboveWindow(int a, int b)
+{
+	int distance = (std::rand() & (b - a)) + a;  // Get a random number from range [a, b]
+	setPos(position.x, -distance);
+}
+

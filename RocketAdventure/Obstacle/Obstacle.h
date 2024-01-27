@@ -30,7 +30,7 @@ class Obstacle : public Entity
 	SDL_Texture* plane_l_tex;  // Texture of a plane facing the left side
 	SDL_Texture* ufo_tex;	   // Texture of a UFO
 	ObstacleTex textureName = ObstacleTex::none;
-	bool hidden = false;	   // Is the Obstacle below or above the game window
+	bool hidden = true;		   // Is the Obstacle below or above the game window
 	bool turnIntoUFO = false;  // Is the change into a UFO needed
 	bool stopped = false;	   // Is the Obstacle's movement stopped
 	Vector2 increaseSpeed = Vector2(false, false);  // Is the increase of speed in x or y axis needed

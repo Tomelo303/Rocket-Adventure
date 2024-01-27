@@ -20,6 +20,7 @@ class Player : public Entity
 	void update(const int& frame) override;  // How the Player should update with every game frame
 	void handleCollision() override;		 // How the Player should update after it collided with other objects
 	int getAltitude() const { return altitude; }
+	void addSpeed(int increment) { speed += increment; }
 
   private:
 	void stayInsideWindow();  // Contain player within the game window

@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 #include "../Player/Player.h"
 #include "../Obstacle/Obstacle.h"
+#include "../Boost/Boost.h"
 
 
 class Game
@@ -24,8 +25,7 @@ class Game
 	static const int height = 1000;  // Height of the game window
 
   private:
-	void checkPlayerCollisionWith(Obstacle* obstacle);  // Check for a collision of Player with an Obstacle
-	//void checkPlayerCollisionWith(Bonus* bonus);  // Check for a collision of Player with a Bonus
+	bool checkPlayerCollisionWith(Entity* entity);  // Check for a collision of Player with another game entity
 	inline void quitGame() { running = false; }
 
 	SDL_Window* window = nullptr;

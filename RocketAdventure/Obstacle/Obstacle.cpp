@@ -41,9 +41,9 @@ void Obstacle::update(const int& frame)
 	// Move the Obstacle back on top when it passes the bottom of the game window
 	if (position.y > Game::height)
 	{
+		placeAboveWindow(Game::height / 4, 1.5 * Game::height);
+		velocity.x = 0;  // Move straight down when above the game window
 		hidden = true;
-		setPos(position.x, -(Game::height / 2));
-		velocity.x = 0;  // Start moving straight down when above the game window
 	}
 
 	// Change the Obstacle's properties and behaviour
@@ -64,11 +64,11 @@ void Obstacle::update(const int& frame)
 		setPos(position.x, -height);  // Place the Obstacle on the new x position
 
 		if (turnIntoUFO)
-			hidden = true;  // Turning this flag on, because the Obstacle will not leave its current position for a while
+			hidden = true;  // Turn this flag on, because the Obstacle will not leave its current position for a while
 		else
 			hidden = false;
 		
-		std::cout << "X = " << position.x << "\n";
+		//std::cout << "X = " << position.x << "\n";
 	}
 	if (textureName != ObstacleTex::UFO) // when it's a plane
 	{
@@ -136,8 +136,6 @@ void Obstacle::generateSpawnProperties()
 {
 	if (textureName != ObstacleTex::UFO)
 	{
-		std::cout << "Generating spawn properties for a plane\n";
-
 		position.x = (std::rand() % ((Game::width + 100 - width) + 100)) - 100;  // Get a random number from range [-100; Game::width - width + 100]
 
 		if (position.x <= 100) // Move to the right
@@ -168,8 +166,6 @@ void Obstacle::generateSpawnProperties()
 	}
 	else // Obstacle is an UFO
 	{
-		std::cout << "Generating spawn properties for a UFO\n";
-
 		position.x = (std::rand() % (Game::width - width));  // Get a random number from range [0; Game::width - width]
 		int direction = std::rand() % 2;  // Get either 0 or 1
 
@@ -177,7 +173,6 @@ void Obstacle::generateSpawnProperties()
 			velocity.x = 1;
 		else // Move to the left
 			velocity.x = -1;
-
 	}
 
 	// Increase the speed if needed

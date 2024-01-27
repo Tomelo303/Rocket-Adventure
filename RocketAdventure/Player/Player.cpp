@@ -5,18 +5,18 @@
 Player::Player(int x, int y)
 {
 	// Set values regarding size, position and movement
-	width = 66;
-	height = 99;
+	width = 49;
+	height = 100;
 	position.x = x - width / 2;
 	position.y = y - height;
 	speed = 5;
 	
 	// Load all textures
-	rocket_tex = TextureHandler::createTexture("../Assets/rocket0.png");
+	rocket_tex = TextureHandler::createTexture("../Assets/rocket.png");
 
 	// Set values regarding texture
 	applyTexture(PlayerTex::Rocket);
-	sourceRect = { 0, 0, 650, 1000 };
+	sourceRect = { 0, 0, 490, 1000 };
 	destinationRect = { position.x, position.y, width, height };
 
 	std::cout << "Player initialized.\n";

@@ -5,7 +5,8 @@
 
 
 Player* player;
-Obstacle* obstacle1;
+Obstacle* obstacle;
+Boost* boost;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
@@ -32,7 +33,8 @@ Game::Game(const char* title, int x, int y)
 
 		// Initialising game entities
 		player = new Player(width / 2, height - 200);
-		obstacle1 = new Obstacle(-height);
+		obstacle = new Obstacle(-height);
+		boost = new Boost(-3 * height);
 
 		running = true;
 	}
@@ -47,7 +49,8 @@ Game::~Game()
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	delete player;
-	delete obstacle1;
+	delete obstacle;
+	delete boost;
 	SDL_Quit();
 	IMG_Quit();
 	std::cout << "Game closed.\n";
@@ -76,10 +79,26 @@ void Game::update()
 {
 	// Update game entities
 	player->update(frame);
-	obstacle1->update(frame);
-
+	obstacle->update(frame);
+	boost->update(frame);
+	
 	// Check for collisions
-	checkPlayerCollisionWith(obstacle1);
+	checkPlayerCollisionWith(obstacle);
+	bool assignBonus = checkPlayerCollisionWith(boost);
+
+	// Assign a proper bonus for collecting a boost
+	if (assignBonus)
+	{
+		switch (boost->getTextureName())
+		{
+		case (BoostTex::Speed):
+			player->addSpeed(1);
+			break;
+
+		default:
+			break;
+		}
+	}
 
 	frame++;
 
@@ -91,18 +110,21 @@ void Game::render()
 	SDL_RenderClear(renderer);
 	// Render updated entities onto the game window
 	player->render();
-	obstacle1->render();
+	obstacle->render();
+	boost->render();
 	SDL_RenderPresent(renderer);
 }
 
-void Game::checkPlayerCollisionWith(Obstacle* obstacle)
+bool Game::checkPlayerCollisionWith(Entity* entity)
 {
-	if (CollisionHandler::AABB(player->getRect(), obstacle->getRect()))
+	if (CollisionHandler::AABB(player->getRect(), entity->getRect()))
 	{
 		player->handleCollision();
-		obstacle->handleCollision();
-
-		//frame = 0;
-		//quitGame();
+		entity->handleCollision();
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
