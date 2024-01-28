@@ -1,10 +1,10 @@
-#include "TextureHandler.h"
+#include "Texture.h"
 #include "../Game/Game.h"
 
 #include <iostream>
 
 
-SDL_Texture* TextureHandler::createTexture(const char* texturePath)
+SDL_Texture* Texture::createTexture(const char* texturePath)
 {
 	SDL_Surface* surface = IMG_Load(texturePath);
 	if (surface)

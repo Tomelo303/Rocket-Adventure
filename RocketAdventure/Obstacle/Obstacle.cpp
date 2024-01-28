@@ -12,9 +12,9 @@ Obstacle::Obstacle(int y)
 	speed.y = startSpeed.y = 5;
 
 	// Load all textures
-	plane_r_tex = TextureHandler::createTexture("../Assets/plane_r.png");
-	plane_l_tex = TextureHandler::createTexture("../Assets/plane_l.png");
-	ufo_tex = TextureHandler::createTexture("../Assets/ufo.png");
+	plane_r_tex = Texture::createTexture("../Assets/plane_r.png");
+	plane_l_tex = Texture::createTexture("../Assets/plane_l.png");
+	ufo_tex = Texture::createTexture("../Assets/ufo.png");
 
 	// Set values regarding position and texture
 	position.y = y;

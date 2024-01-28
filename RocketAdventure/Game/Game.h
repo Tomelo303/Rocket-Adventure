@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include "../Player/Player.h"
 #include "../Obstacle/Obstacle.h"
 #include "../Boost/Boost.h"

@@ -1,5 +1,6 @@
 #include "Game.h"
-#include "../CollisionHandler/CollisionHandler.h"
+#include "../Collision/Collision.h"
+#include "../Text/Text.h"
 
 #include <iostream>
 
@@ -7,12 +8,13 @@
 Player* player;
 Obstacle* obstacle;
 Boost* boost;
+Text* text;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
 Game::Game(const char* title, int x, int y)
 {
-	if (SDL_Init(SDL_INIT_EVERYTHING) == 0 && IMG_Init(IMG_INIT_PNG) == IMG_INIT_PNG)
+	if (SDL_Init(SDL_INIT_EVERYTHING) == 0 && IMG_Init(IMG_INIT_PNG) == IMG_INIT_PNG && TTF_Init() != -1)
 	{
 		std::cout << "Subsystems initialized.\n";
 
@@ -36,6 +38,14 @@ Game::Game(const char* title, int x, int y)
 		obstacle = new Obstacle(-height);
 		boost = new Boost(-3 * height);
 
+		// Initialising text objects
+		//text = new Text("../Assets/Minecraftia.ttf", 30, "Test text", { 255, 0, 0, 255 });
+		text = new Text("../Assets/Minecraftia.ttf");
+
+		// Setting properties of text objects
+		text->setFontSize(30);
+		text->setFontColor(FontColor::Black);
+
 		running = true;
 	}
 	else
@@ -51,8 +61,10 @@ Game::~Game()
 	delete player;
 	delete obstacle;
 	delete boost;
+	delete text;
 	SDL_Quit();
 	IMG_Quit();
+	TTF_Quit();
 	std::cout << "Game closed.\n";
 }
 
@@ -101,17 +113,19 @@ void Game::update()
 
 void Game::render()
 {
-	SDL_RenderClear(renderer);
+	SDL_RenderClear(renderer);  // Clear previous render
 	// Render updated entities onto the game window
-	player->render();
+	// (order of rendering determines which objects are further in the background from the furthest to the nearest)
 	obstacle->render();
+	player->render();
 	boost->render();
+	text->display(20, height - 20 - text->height(), "Frame: ", frame);
 	SDL_RenderPresent(renderer);
 }
 
 void Game::checkPlayerCollisionWith(Obstacle* obs)
 {
-	if (CollisionHandler::AABB(player->getRect(), obs->getRect()))
+	if (Collision::AABB(player->getRect(), obs->getRect()))
 	{
 		player->handleCollision();
 		boost->handleCollision();
@@ -123,7 +137,7 @@ void Game::checkPlayerCollisionWith(Obstacle* obs)
 
 void Game::checkPlayerCollisionWith(Boost* boo)
 {
-	if (CollisionHandler::AABB(player->getRect(), boo->getRect()))
+	if (Collision::AABB(player->getRect(), boo->getRect()))
 	{
 		// Assign a proper bonus for collecting a boost
 		switch (boo->getTextureName())

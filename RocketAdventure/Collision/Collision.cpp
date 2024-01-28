@@ -1,12 +1,12 @@
-#include "CollisionHandler.h"
+#include "Collision.h"
 
-CollisionHandler::CollisionHandler()
+Collision::Collision()
 {}
 
-CollisionHandler::~CollisionHandler()
+Collision::~Collision()
 {}
 
-bool CollisionHandler::AABB(const SDL_Rect& rectA, const SDL_Rect& rectB)
+bool Collision::AABB(const SDL_Rect& rectA, const SDL_Rect& rectB)
 {
 	// Check if the rectangles intersect with each other
 	if (rectA.x + rectA.w >= rectB.x &&

@@ -2,7 +2,7 @@
 #define ENTITY_H
 
 #include "../Vector2/Vector2.h"
-#include "../TextureHandler/TextureHandler.h"
+#include "../Texture/Texture.h"
 
 
 class Entity
@@ -14,7 +14,7 @@ class Entity
 	void render();  // Display the changes after an update
 	virtual void update(const unsigned int& frame);  // How the Entity should update with every game frame
 	virtual void handleCollision();			// How the Entity should update after it collided with other objects
-	const SDL_Rect& getRect() { return destinationRect; }
+	const SDL_Rect& getRect() const { return destinationRect; }
 	virtual void addSpeed(int increment) { speed.y += increment; }
 
   protected:

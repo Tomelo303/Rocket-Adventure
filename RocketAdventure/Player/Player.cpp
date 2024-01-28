@@ -12,8 +12,8 @@ Player::Player(int x, int y)
 	speed = startSpeed = 3;
 	
 	// Load all textures
-	rocket_tex = TextureHandler::createTexture("../Assets/rocket.png");
-	force_field_tex = TextureHandler::createTexture("../Assets/force_field.png");
+	rocket_tex = Texture::createTexture("../Assets/rocket.png");
+	force_field_tex = Texture::createTexture("../Assets/force_field.png");
 
 	// Set values regarding texture
 	applyTexture(PlayerTex::Rocket);

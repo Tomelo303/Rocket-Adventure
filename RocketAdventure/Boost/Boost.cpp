@@ -10,8 +10,8 @@ Boost::Boost(int y)
 	speed.y = 7;
 
 	// Load all textures
-	speed_boost_tex = TextureHandler::createTexture("../Assets/speed_boost.png");
-	force_field_boost_tex = TextureHandler::createTexture("../Assets/force_field_boost.png");
+	speed_boost_tex = Texture::createTexture("../Assets/speed_boost.png");
+	force_field_boost_tex = Texture::createTexture("../Assets/force_field_boost.png");
 
 	// Set values regarding position and texture
 	position.y = y;
