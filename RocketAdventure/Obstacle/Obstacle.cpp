@@ -92,14 +92,14 @@ void Obstacle::update(const unsigned int& frame)
 	}
 
 	// Set the turn into an UFO flag on when the game frame hits a desired value
-	if (frame == 10000)
+	if (frame == 1000)
 	{
 		turnIntoUFO = true;
 		increaseSpeed = false;  // Turn this flag off to make sure the Obstacle starts with default speed as a UFO
 	}
 
 	// Resume the Obstacle's movement when the game frame hits a desired value
-	if (frame == 11000)
+	if (frame == 2000)
 	{
 		speed.x = 10;	  // Set a default in x axis speed for a UFO
 		speed.y = 4;	  // Set a default in y axis speed for a UFO
@@ -116,7 +116,7 @@ void Obstacle::handleCollision()
 {
 	// Reset Obstacle's texture if it is a UFO
 	if (textureName == ObstacleTex::UFO)
-		textureName == ObstacleTex::none;
+		textureName = ObstacleTex::none;
 	generateSpawnProperties();  // position.x, velocity.x and texture
 
 	placeAboveWindow(Game::height / 4, 1.5 * Game::height);
@@ -124,7 +124,6 @@ void Obstacle::handleCollision()
 
 	hidden = true;
 	turnIntoUFO = false;
-	std::cout << "Obstacle collided\n";
 }
 
 void Obstacle::bounceFromWalls()

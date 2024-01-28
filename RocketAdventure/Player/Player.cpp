@@ -133,7 +133,6 @@ void Player::handleCollision()
 {
 	setPos(startPos);
 	speed = startSpeed;
-	std::cout << "Player collided\n";
 }
 
 void Player::addSpeed(int increment)

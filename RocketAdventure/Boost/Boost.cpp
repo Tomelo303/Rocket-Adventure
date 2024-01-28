@@ -54,7 +54,6 @@ void Boost::handleCollision()
 {
 	generateSpawnProperties();
 	placeAboveWindow(5 * Game::height, 10 * Game::height);
-	std::cout << "Boost collided\n";
 }
 
 void Boost::generateSpawnProperties()
