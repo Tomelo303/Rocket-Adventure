@@ -8,8 +8,8 @@ Obstacle::Obstacle(int y)
 	width = 66;
 	height = 42;
 	velocity.y = 1;
-	speed.x = 1;
-	speed.y = 5;
+	speed.x = startSpeed.x = 1;
+	speed.y = startSpeed.y = 5;
 
 	// Load all textures
 	plane_r_tex = TextureHandler::createTexture("../Assets/plane_r.png");
@@ -34,7 +34,7 @@ Obstacle::~Obstacle()
 	std::cout << "Obstacle destroyed. ";
 }
 
-void Obstacle::update(const int& frame)
+void Obstacle::update(const unsigned int& frame)
 {
 	move();
 
@@ -114,7 +114,16 @@ void Obstacle::update(const int& frame)
 
 void Obstacle::handleCollision()
 {
-	// Reset Obstacle's speed and texture and move back at the start height
+	// Reset Obstacle's texture if it is a UFO
+	if (textureName == ObstacleTex::UFO)
+		textureName == ObstacleTex::none;
+	generateSpawnProperties();  // position.x, velocity.x and texture
+
+	placeAboveWindow(Game::height / 4, 1.5 * Game::height);
+	speed = startSpeed;
+
+	hidden = true;
+	turnIntoUFO = false;
 	std::cout << "Obstacle collided\n";
 }
 
@@ -136,7 +145,7 @@ void Obstacle::generateSpawnProperties()
 {
 	if (textureName != ObstacleTex::UFO)
 	{
-		position.x = (std::rand() % ((Game::width + 100 - width) + 100)) - 100;  // Get a random number from range [-100; Game::width - width + 100]
+		position.x = (std::rand() % ((Game::width - width + 100) + 100)) - 100;  // Get a random number from range [-100; Game::width - width + 100]
 
 		if (position.x <= 100) // Move to the right
 		{

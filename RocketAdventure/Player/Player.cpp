@@ -7,12 +7,13 @@ Player::Player(int x, int y)
 	// Set values regarding size, position and movement
 	width = 49;
 	height = 100;
-	position.x = x - width / 2;
-	position.y = y - height;
-	speed = 5;
+	position.x = startPos.x = x - width / 2;
+	position.y = startPos.y = y - height;
+	speed = startSpeed = 3;
 	
 	// Load all textures
 	rocket_tex = TextureHandler::createTexture("../Assets/rocket.png");
+	force_field_tex = TextureHandler::createTexture("../Assets/force_field.png");
 
 	// Set values regarding texture
 	applyTexture(PlayerTex::Rocket);
@@ -26,6 +27,7 @@ Player::~Player()
 {
 	// Destroy saved textures
 	SDL_DestroyTexture(rocket_tex);
+	SDL_DestroyTexture(force_field_tex);
 
 	std::cout << "Player destroyed. ";
 }
@@ -120,17 +122,23 @@ void Player::handleEvents()
 		velocity.x = 0;
 }
 
-void Player::update(const int& frame)
+void Player::update(const unsigned int& frame)
 {
 	move();
-	//std::cout << "Player is on " << position << " coordinates.\n";
+	//std::cout << "Player is on " << position << " coordinates\n";
 	stayInsideWindow();
 }
 
 void Player::handleCollision()
 {
-	// Move the player back at the start position
+	setPos(startPos);
+	speed = startSpeed;
 	std::cout << "Player collided\n";
+}
+
+void Player::addSpeed(int increment)
+{
+	speed += increment;
 }
 
 void Player::stayInsideWindow()
@@ -156,8 +164,31 @@ void Player::applyTexture(PlayerTex tex)
 		switch (tex)
 		{
 		case (PlayerTex::Rocket):
+			if (textureName == PlayerTex::ForceField)
+			{
+				width = 49;
+				height = 100;
+				position.x -= (width - 105) / 2;
+				position.y -= (height - 105) / 2;
+				sourceRect = { 0, 0, 490, 1000 };
+				destinationRect = { position.x, position.y, width, height };
+			}
 			texture = rocket_tex;
 			textureName = PlayerTex::Rocket;
+			break;
+
+		case (PlayerTex::ForceField):
+			if (textureName == PlayerTex::Rocket)
+			{
+				width = 105;
+				height = 105;
+				position.x -= (width - 49) / 2;
+				position.y -= (height - 100) / 2;
+				sourceRect = { 0, 0, 1050, 1050 };
+				destinationRect = { position.x, position.y, width, height };
+			}
+			texture = force_field_tex;
+			textureName = PlayerTex::ForceField;
 			break;
 
 		case (PlayerTex::none):

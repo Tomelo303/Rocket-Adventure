@@ -83,21 +83,15 @@ void Game::update()
 	boost->update(frame);
 	
 	// Check for collisions
+	if (playerCollision)
 	checkPlayerCollisionWith(obstacle);
-	bool assignBonus = checkPlayerCollisionWith(boost);
+	checkPlayerCollisionWith(boost);
 
-	// Assign a proper bonus for collecting a boost
-	if (assignBonus)
+	// Turn the force field off after 500 frames and activate the collision back
+	if (frame - forceFieldStart == 500 && playerCollision == false)
 	{
-		switch (boost->getTextureName())
-		{
-		case (BoostTex::Speed):
-			player->addSpeed(1);
-			break;
-
-		default:
-			break;
-		}
+		player->forceFieldOff();
+		playerCollision = true;
 	}
 
 	frame++;
@@ -115,16 +109,40 @@ void Game::render()
 	SDL_RenderPresent(renderer);
 }
 
-bool Game::checkPlayerCollisionWith(Entity* entity)
+void Game::checkPlayerCollisionWith(Obstacle* obs)
 {
-	if (CollisionHandler::AABB(player->getRect(), entity->getRect()))
+	if (CollisionHandler::AABB(player->getRect(), obs->getRect()))
 	{
 		player->handleCollision();
-		entity->handleCollision();
-		return true;
+		boost->handleCollision();
+		obs->handleCollision();
+		
+		frame = 0;
 	}
-	else
+}
+
+void Game::checkPlayerCollisionWith(Boost* boo)
+{
+	if (CollisionHandler::AABB(player->getRect(), boo->getRect()))
 	{
-		return false;
+		// Assign a proper bonus for collecting a boost
+		switch (boo->getTextureName())
+		{
+		case (BoostTex::SpeedBoost):
+			player->addSpeed(1);
+			obstacle->addSpeed(1);
+			break;
+
+		case (BoostTex::ForceFieldBoost):
+			player->forceFieldOn();
+			playerCollision = false;
+			forceFieldStart = frame;  // Set current frame as the frame in which the force field was activated
+			break;
+
+		default:
+			break;
+		}
+
+		boo->handleCollision();
 	}
 }

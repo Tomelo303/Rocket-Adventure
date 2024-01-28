@@ -11,8 +11,7 @@ Boost::Boost(int y)
 
 	// Load all textures
 	speed_boost_tex = TextureHandler::createTexture("../Assets/speed_boost.png");
-	// !!! Need to widen the borders of this texture
-
+	force_field_boost_tex = TextureHandler::createTexture("../Assets/force_field_boost.png");
 
 	// Set values regarding position and texture
 	position.y = y;
@@ -26,10 +25,11 @@ Boost::~Boost()
 {
 	// Destroy saved textures
 	SDL_DestroyTexture(speed_boost_tex);
+	SDL_DestroyTexture(force_field_boost_tex);
 	std::cout << "Boost destroyed. ";
 }
 
-void Boost::update(const int& frame)
+void Boost::update(const unsigned int& frame)
 {
 	move();
 
@@ -46,24 +46,28 @@ void Boost::update(const int& frame)
 		generateSpawnProperties();	  // position.x, velocity.x and texture
 		setPos(position.x, -height);  // Place the Boost on the new x position
 		hidden = false;
-		std::cout << "X = " << position.x << "\n";
+		//std::cout << "X = " << position.x << "\n";
 	}
 }
 
 void Boost::handleCollision()
 {
+	generateSpawnProperties();
 	placeAboveWindow(5 * Game::height, 10 * Game::height);
 	std::cout << "Boost collided\n";
 }
 
 void Boost::generateSpawnProperties()
 {
-	position.x = (std::rand() % ((Game::width - 100 - width) - 100)) + 100;  // Get a random number from range [100; Game::width - width - 100]
+	position.x = (std::rand() % ((Game::width - width - 100) - 100)) + 100;  // Get a random number from range [100; Game::width - width - 100]
 	
-	// Here will be another random number generator that will choose which boost to use
-	// A proper texture will be used
-	// Currently there's only one boost variant
-	applyTexture(BoostTex::Speed);
+	// Get a random variant
+	int variant = (rand() % 100) + 1;  // Get a random number from range [1; 100]
+
+	if (variant <= 40)
+		applyTexture(BoostTex::SpeedBoost);
+	else
+		applyTexture(BoostTex::ForceFieldBoost);
 }
 
 void Boost::applyTexture(BoostTex tex)
@@ -73,9 +77,14 @@ void Boost::applyTexture(BoostTex tex)
 		// Apply proper texture and its corresponding name
 		switch (tex)
 		{
-		case (BoostTex::Speed):
+		case (BoostTex::SpeedBoost):
 			texture = speed_boost_tex;
-			textureName = BoostTex::Speed;
+			textureName = BoostTex::SpeedBoost;
+			break;
+
+		case (BoostTex::ForceFieldBoost):
+			texture = force_field_boost_tex;
+			textureName = BoostTex::ForceFieldBoost;
 			break;
 
 		case (BoostTex::none):

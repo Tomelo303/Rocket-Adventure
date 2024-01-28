@@ -21,16 +21,19 @@ class Game
 
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
-	static const int width = 800;	 // Width of the game window
+	static const int width = 700;	 // Width of the game window
 	static const int height = 1000;  // Height of the game window
 
   private:
-	bool checkPlayerCollisionWith(Entity* entity);  // Check for a collision of Player with another game entity
+	void checkPlayerCollisionWith(Obstacle* obs);  // Check for a Player collision with an Obstacle
+	void checkPlayerCollisionWith(Boost* boo);  // Check for a Player collision with an Obstacle
 	inline void quitGame() { running = false; }
 
 	SDL_Window* window = nullptr;
 	bool running = false;
-	int frame = 0;  // Number of frames that passed since the start of the game
+	bool playerCollision = true;  // Turns the collision of a Player and an Obstacle on and off
+	unsigned int frame = 0;  // Number of frames that passed since the start of the game
+	unsigned int forceFieldStart = 0;  // The frame at which the force field was activated
 };
 
 #endif // GAME_H

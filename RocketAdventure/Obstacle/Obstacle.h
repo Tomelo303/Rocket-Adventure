@@ -18,8 +18,8 @@ class Obstacle : public Entity
 	Obstacle(int y);
 	~Obstacle();
 
-	void update(const int& frame) override;  // How the Obstacle should update with every game frame
-	void handleCollision() override;		 // How the Obstacle should update after it collided with other objects
+	void update(const unsigned int& frame) override;  // How the Obstacle should update with every game frame
+	void handleCollision() override;  // How the Obstacle should update after it collided with other objects
 
   private:
 	void bounceFromWalls();  // Change the direction in x axis if Obstacle hits the vertical boundry of the game window
