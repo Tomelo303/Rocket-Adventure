@@ -82,24 +82,24 @@ void Obstacle::update(const unsigned int& frame)
 	else // when it's a UFO
 	{
 		// Set the speed to change next time the Obstacle will be outside the game window
-		if (frame % 500 == 0)
+		if (frame % 300 == 0)
 			increaseSpeed.x = true;
 
-		if (frame % 1000 == 0)
+		if (frame % 1500 == 0)
 			increaseSpeed.y = true;
 
 		bounceFromWalls();
 	}
 
 	// Set the turn into an UFO flag on when the game frame hits a desired value
-	if (frame == 1000)
+	if (frame == 10000)
 	{
 		turnIntoUFO = true;
 		increaseSpeed = false;  // Turn this flag off to make sure the Obstacle starts with default speed as a UFO
 	}
 
 	// Resume the Obstacle's movement when the game frame hits a desired value
-	if (frame == 2000)
+	if (frame == 11000)
 	{
 		speed.x = 10;	  // Set a default in x axis speed for a UFO
 		speed.y = 4;	  // Set a default in y axis speed for a UFO
