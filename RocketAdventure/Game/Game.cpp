@@ -5,17 +5,18 @@
 #include <iostream>
 
 
-Player* player;
-Obstacle* obstacle;
-Boost* boost;
-Background* background;
-Text* score_text;
-Text* high_score_text;
-Text* force_field_text;
+Player* player = nullptr;
+Player* player2 = nullptr;
+Obstacle* obstacle = nullptr;
+Boost* boost = nullptr;
+Background* background = nullptr;
+Text* score_text = nullptr;
+Text* high_score_text = nullptr;
+Text* force_field_text = nullptr;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
-Game::Game(const char* title, int x, int y)
+Game::Game(const char* title, int x, int y, bool two_players_mode)
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0 && IMG_Init(IMG_INIT_PNG) == IMG_INIT_PNG && TTF_Init() != -1)
 	{
@@ -36,8 +37,19 @@ Game::Game(const char* title, int x, int y)
 
 		std::srand(static_cast<unsigned int>(std::time(NULL)));  // Generating a seed for the rand() functions based on the time
 
+		secondPlayer = two_players_mode;
+
 		// Initialising game entities
-		player = new Player(width / 2, height - 200);
+		if (secondPlayer)
+		{
+			player = new Player(width / 2 - 50, height - 200, false);
+			player2 = new Player(width / 2 + 50, height - 200, true);
+		}
+		else
+		{
+			player = new Player(width / 2, height - 200, false);
+		}
+
 		obstacle = new Obstacle(-height);
 		boost = new Boost(-3 * height);
 		background = new Background();
@@ -69,6 +81,8 @@ Game::~Game()
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	delete player;
+	if (secondPlayer)
+		delete player2;
 	delete obstacle;
 	delete boost;
 	delete background;
@@ -98,27 +112,54 @@ void Game::handleEvents()
 
 	// Handle events regarding game entities
 	player->handleEvents();
+	
+	if (secondPlayer)
+		player2->handleEvents();
 }
 
 void Game::update()
 {
 	// Update game entities
 	player->update(frame);
+	
+	if (secondPlayer)
+		player2->update(frame);
+	
 	if (obstacle->getTextureName() != ObstacleTex::UFO)  // After obstacle turns into a UFO change speed only when player does
 		background->setSpeed(obstacle->getSpeed().y);  // Ensure background has the same speed as Obstacle
+	
 	obstacle->update(frame);
 	boost->update(frame);
 	background->update(frame);
 	
 	// Handle collisions
 	if (playerCollision)
-		handlePlayerCollisionWith(obstacle);
-	handlePlayerCollisionWith(boost);
+	{
+		if (secondPlayer)
+		{
+			handleCollisionOf(player, obstacle, player2);
+			handleCollisionOf(player2, obstacle, player);
+		}
+		else
+			handleCollisionOf(player, obstacle);
+	}
+
+	if (secondPlayer)
+	{
+		handleCollisionOf(player, boost, player2);
+		handleCollisionOf(player2, boost, player);
+	}
+	else
+		handleCollisionOf(player, boost);
 
 	// Turn the force field off and activate the collision back
 	if (frame - forceFieldStart == forceFieldDuration && playerCollision == false)
 	{
 		player->forceFieldOff();
+
+		if (secondPlayer)
+			player2->forceFieldOff();
+
 		playerCollision = true;
 	}
 
@@ -146,6 +187,10 @@ void Game::update()
 		if (darkeningFactor == 250)
 		{
 			player->applySpaceTexture();
+
+			if (secondPlayer)
+				player2->applySpaceTexture();
+
 			boost->applySpaceTexture();
 			high_score_text->setFontColor(FontColor::White);
 		}
@@ -165,6 +210,10 @@ void Game::render()
 	// (order of rendering determines which objects are further in the background from the furthest to the nearest)
 	background->render();
 	obstacle->render();
+
+	if (secondPlayer)
+		player2->render();
+
 	player->render();
 	boost->render();
 	high_score_text->display(20, height - 20 - high_score_text->height(), "High score: ", highScore);
@@ -174,17 +223,47 @@ void Game::render()
 	SDL_RenderPresent(renderer);
 }
 
-void Game::handlePlayerCollisionWith(Obstacle* obs)
+void Game::handleCollisionOf(Player* player, Obstacle* obstacle)
 {
-	if (Collision::AABB(player->getRect(), obs->getRect()))
+	if (Collision::AABB(player->getRect(), obstacle->getRect()))
 	{
 		player->handleCollision();
 		boost->handleCollision();
 		background->handleCollision();
-		obs->handleCollision();
+		obstacle->handleCollision();
 		
 		// Disable space textures
 		player->disableSpaceTexture();
+		boost->disableSpaceTexture();
+
+		// Return previous render and text color
+		if (darkeningFactor < 500)
+		{
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+			high_score_text->setFontColor(FontColor::Black);
+		}
+		frame = 0;
+		darkeningFactor = 500;
+		if (highScore < score)
+			highScore = score;
+		score = 0;
+		std::cout << "\nGame restarted.\n\n";
+	}
+}
+
+void Game::handleCollisionOf(Player* player1, Obstacle* obstacle, Player* player2)
+{
+	if (Collision::AABB(player1->getRect(), obstacle->getRect()))
+	{
+		player1->handleCollision();
+		player2->handleCollision();
+		boost->handleCollision();
+		background->handleCollision();
+		obstacle->handleCollision();
+
+		// Disable space textures
+		player1->disableSpaceTexture();
+		player2->disableSpaceTexture();
 		boost->disableSpaceTexture();
 
 		// Return previous render and text color
@@ -202,12 +281,12 @@ void Game::handlePlayerCollisionWith(Obstacle* obs)
 	}
 }
 
-void Game::handlePlayerCollisionWith(Boost* boo)
+void Game::handleCollisionOf(Player* player, Boost* boost)
 {
-	if (Collision::AABB(player->getRect(), boo->getRect()))
+	if (Collision::AABB(player->getRect(), boost->getRect()))
 	{
 		// Assign a proper bonus for collecting a boost
-		switch (boo->getTextureName())
+		switch (boost->getTextureName())
 		{
 		case (BoostTex::SpeedBoost):
 			player->addSpeed(1);
@@ -226,6 +305,36 @@ void Game::handlePlayerCollisionWith(Boost* boo)
 			break;
 		}
 
-		boo->handleCollision();
+		boost->handleCollision();
+	}
+}
+
+void Game::handleCollisionOf(Player* player1, Boost* boost, Player* player2)
+{
+	if (Collision::AABB(player1->getRect(), boost->getRect()))
+	{
+		// Assign a proper bonus for collecting a boost
+		switch (boost->getTextureName())
+		{
+		case (BoostTex::SpeedBoost):
+			player1->addSpeed(1);
+			player2->addSpeed(1);
+			obstacle->addSpeed(1);
+			if (obstacle->getTextureName() == ObstacleTex::UFO)
+				background->addSpeed(1);
+			break;
+
+		case (BoostTex::ForceFieldBoost):
+			player1->forceFieldOn();
+			player2->forceFieldOn();
+			playerCollision = false;
+			forceFieldStart = frame;  // Set current frame as the frame in which the force field was activated
+			break;
+
+		default:
+			break;
+		}
+
+		boost->handleCollision();
 	}
 }

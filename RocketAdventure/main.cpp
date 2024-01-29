@@ -3,7 +3,7 @@
 
 int main(int argc, char* argv[])
 {
-	Game game("Rocket Adventure", SDL_WINDOWPOS_CENTERED, 32);
+	Game game("Rocket Adventure", SDL_WINDOWPOS_CENTERED, 32, true);
 
 	const int FPS = 60;					// Target frame rate
 	const int frameDelay = 1000 / FPS;  // The shortest time a frame should last

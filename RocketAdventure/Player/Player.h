@@ -14,7 +14,7 @@ enum class PlayerTex
 class Player : public Entity
 {
   public:
-	Player(int x, int y);
+	Player(int x, int y, bool secondPlayer);
 	~Player();
 
 	void handleEvents();  // Handle user input
@@ -28,8 +28,6 @@ class Player : public Entity
   private:
 	void stayInsideWindow();  // Contain player within the game window
 	void applyTexture(PlayerTex tex);
-	//void applyTexture(EngineTex tex);
-	//void applyTexture(BoostersTex tex);
 
 	SDL_Texture* rocket_tex;			 // Texture of a rocket
 	SDL_Texture* rocket_white_tex;		 // Texture of a white rocket
@@ -40,6 +38,7 @@ class Player : public Entity
 	SDL_Keycode currKey = 0;  // Keycode of the key that is being pressed (with custom behaviour)
 	SDL_Keycode prevKey = 0;  // Stores the keycode of the most recent key pressed
 	bool W = false, S = false, A = false, D = false;  // Flags keeping track of which keys are pressed
+	bool secondPlayer = false;  // Is this instance of Player a second Player
 };
 
 #endif // PLAYER_H

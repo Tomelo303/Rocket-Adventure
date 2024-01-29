@@ -2,7 +2,7 @@
 #include "../Game/Game.h"
 
 
-Player::Player(int x, int y)
+Player::Player(int x, int y, bool secondPlayer)
 {
 	// Set values regarding size, position and movement
 	width = 49;
@@ -22,7 +22,12 @@ Player::Player(int x, int y)
 	sourceRect = { 0, 0, 490, 1000 };
 	destinationRect = { position.x, position.y, width, height };
 
-	std::cout << "Player initialized.\n";
+	this->secondPlayer = secondPlayer;
+
+	if (this->secondPlayer)
+		std::cout << "Player 2 initialized.\n";
+	else
+		std::cout << "Player initialized.\n";
 }
 
 Player::~Player()
@@ -33,14 +38,18 @@ Player::~Player()
 	SDL_DestroyTexture(force_field_tex);
 	SDL_DestroyTexture(force_field_white_tex);
 
-	std::cout << "Player destroyed. ";
+	if (secondPlayer)
+		std::cout << "Player 2 destroyed. ";
+	else
+		std::cout << "Player destroyed. ";
 }
 
 void Player::handleEvents()
 {
 	key = Game::event.key.keysym.sym;  // Get the keycode of the key that is being pressed
 
-	if (key != 0 && (key == SDLK_w || key == SDLK_s || key == SDLK_a || key == SDLK_d))
+	if (key != 0 && ( (key == SDLK_w || key == SDLK_s || key == SDLK_a || key == SDLK_d) 
+				   || (key == SDLK_UP || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT) ))
 	{
 		// Prevent setting the previous key keycode to 0
 		if (currKey != 0)
@@ -53,52 +62,107 @@ void Player::handleEvents()
 	// Register which keys are being pressed
 	if (Game::event.type == SDL_KEYDOWN)
 	{
-		switch (currKey)
+		if (secondPlayer)
 		{
-		case SDLK_w:
-			W = true;
-			break;
+			switch (currKey)
+			{
+			case SDLK_UP:
+				W = true;
+				break;
 
-		case SDLK_s:
-			S = true;
-			break;
+			case SDLK_DOWN:
+				S = true;
+				break;
 
-		case SDLK_a:
-			A = true;
-			break;
+			case SDLK_LEFT:
+				A = true;
+				break;
 
-		case SDLK_d:
-			D = true;
-			break;
+			case SDLK_RIGHT:
+				D = true;
+				break;
 
-		default:
-			break;
+			default:
+				break;
+			}
 		}
+		else
+		{
+			switch (currKey)
+			{
+			case SDLK_w:
+				W = true;
+				break;
+
+			case SDLK_s:
+				S = true;
+				break;
+
+			case SDLK_a:
+				A = true;
+				break;
+
+			case SDLK_d:
+				D = true;
+				break;
+
+			default:
+				break;
+			}
+		}
+
 	}
 
 	// Register which keys are being released
 	if (Game::event.type == SDL_KEYUP)
 	{
-		switch (currKey)
+		if (secondPlayer)
 		{
-		case SDLK_w:
-			W = false;
-			break;
+			switch (currKey)
+			{
+			case SDLK_UP:
+				W = false;
+				break;
 
-		case SDLK_s:
-			S = false;
-			break;
+			case SDLK_DOWN:
+				S = false;
+				break;
 
-		case SDLK_a:
-			A = false;
-			break;
+			case SDLK_LEFT:
+				A = false;
+				break;
 
-		case SDLK_d:
-			D = false;
-			break;
+			case SDLK_RIGHT:
+				D = false;
+				break;
 
-		default:
-			break;
+			default:
+				break;
+			}
+		}
+		else
+		{
+			switch (currKey)
+			{
+			case SDLK_w:
+				W = false;
+				break;
+
+			case SDLK_s:
+				S = false;
+				break;
+
+			case SDLK_a:
+				A = false;
+				break;
+
+			case SDLK_d:
+				D = false;
+				break;
+
+			default:
+				break;
+			}
 		}
 
 		// Set the current key keycode to 0 only when every key is released
