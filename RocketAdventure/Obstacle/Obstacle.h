@@ -20,6 +20,8 @@ class Obstacle : public Entity
 
 	void update(const unsigned int& frame) override;  // How the Obstacle should update with every game frame
 	void handleCollision() override;  // How the Obstacle should update after it collided with other objects
+	ObstacleTex getTextureName() const { return textureName; }
+	void addSpeed(int increment) override { speed.y += increment; }
 
   private:
 	void bounceFromWalls();  // Change the direction in x axis if Obstacle hits the vertical boundry of the game window

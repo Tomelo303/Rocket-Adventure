@@ -73,6 +73,20 @@ void Text::display(int x, int y, const char* text, int number)
 	display(x, y, concatenate(str, number));
 }
 
+void Text::display(int x, int y, std::string& text1, int number, std::string& text2)
+{
+	display(x, y, concatenate(text1, number) += text2);
+}
+
+void Text::display(int x, int y, const char* text1, int number, const char* text2)
+{
+	// Convert const char* to std::string
+	std::string str1 = text1;
+	std::string str2 = text2;
+
+	display(x, y, concatenate(str1, number) += str2);
+}
+
 std::string& Text::concatenate(std::string& text, int number)
 {
 	return text += std::to_string(number);

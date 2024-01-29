@@ -73,11 +73,11 @@ void Obstacle::update(const unsigned int& frame)
 	if (textureName != ObstacleTex::UFO) // when it's a plane
 	{
 		// Set the speed to change next time the Obstacle will be outside the game window
-		if (frame % 1000 == 0 && frame != 0)
-			increaseSpeed.y = true;
-
 		if (frame % 2000 == 0 && frame != 0)
 			increaseSpeed.x = true;
+
+		if (frame % 1000 == 0 && frame != 0)
+			increaseSpeed.y = true;
 	}
 	else // when it's a UFO
 	{
@@ -85,21 +85,21 @@ void Obstacle::update(const unsigned int& frame)
 		if (frame % 300 == 0)
 			increaseSpeed.x = true;
 
-		if (frame % 1500 == 0)
+		if (frame % 1000 == 0)
 			increaseSpeed.y = true;
 
 		bounceFromWalls();
 	}
 
 	// Set the turn into an UFO flag on when the game frame hits a desired value
-	if (frame == 10000)
+	if (frame == Game::spaceStart)
 	{
 		turnIntoUFO = true;
 		increaseSpeed = false;  // Turn this flag off to make sure the Obstacle starts with default speed as a UFO
 	}
 
 	// Resume the Obstacle's movement when the game frame hits a desired value
-	if (frame == 11000)
+	if (frame == Game::spaceStart + Game::transitionDuration)
 	{
 		speed.x = 10;	  // Set a default in x axis speed for a UFO
 		speed.y = 4;	  // Set a default in y axis speed for a UFO

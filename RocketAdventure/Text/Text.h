@@ -28,6 +28,8 @@ class Text
 	void display(int x, int y, const char* text);   // Display the text on the window in (x, y) position
 	void display(int x, int y, std::string& text, int number);  // Display the text concatenated with a number on the window in (x, y) position
 	void display(int x, int y, const char* text, int number);	// Display the text concatenated with a number on the window in (x, y) position
+	void display(int x, int y, std::string& text1, int number, std::string& text2);  // Display the text concatenated with a number and another text on the window in (x, y) position
+	void display(int x, int y, const char* text1, int number, const char* text2);	 // Display the text concatenated with a number and another text on the window in (x, y) position
 	int width() const { return rect.w; }
 	int height() const { return rect.h; }
 

@@ -13,7 +13,9 @@ Player::Player(int x, int y)
 	
 	// Load all textures
 	rocket_tex = Texture::createTexture("../Assets/rocket.png");
+	rocket_white_tex = Texture::createTexture("../Assets/rocket_white.png");
 	force_field_tex = Texture::createTexture("../Assets/force_field.png");
+	force_field_white_tex = Texture::createTexture("../Assets/force_field_white.png");
 
 	// Set values regarding texture
 	applyTexture(PlayerTex::Rocket);
@@ -27,7 +29,9 @@ Player::~Player()
 {
 	// Destroy saved textures
 	SDL_DestroyTexture(rocket_tex);
+	SDL_DestroyTexture(rocket_white_tex);
 	SDL_DestroyTexture(force_field_tex);
+	SDL_DestroyTexture(force_field_white_tex);
 
 	std::cout << "Player destroyed. ";
 }
@@ -126,6 +130,7 @@ void Player::update(const unsigned int& frame)
 {
 	move();
 	//std::cout << "Player is on " << position << " coordinates\n";
+	//std::cout << "Player speed: " << speed << "\n";
 	stayInsideWindow();
 }
 
@@ -135,9 +140,16 @@ void Player::handleCollision()
 	speed = startSpeed;
 }
 
-void Player::addSpeed(int increment)
+void Player::applySpaceTexture()
 {
-	speed += increment;
+	spaceTexture = true;
+	applyTexture(textureName);
+}
+
+void Player::disableSpaceTexture()
+{
+	spaceTexture = false;
+	applyTexture(textureName);
 }
 
 void Player::stayInsideWindow()
@@ -157,46 +169,55 @@ void Player::stayInsideWindow()
 
 void Player::applyTexture(PlayerTex tex)
 {
-	if (textureName != tex)
+	// Apply proper texture and its corresponding name
+	switch (tex)
 	{
-		// Apply proper texture and its corresponding name
-		switch (tex)
+	case (PlayerTex::Rocket):
+		if (textureName == PlayerTex::ForceField)
 		{
-		case (PlayerTex::Rocket):
-			if (textureName == PlayerTex::ForceField)
-			{
-				width = 49;
-				height = 100;
-				position.x -= (width - 105) / 2;
-				position.y -= (height - 105) / 2;
-				sourceRect = { 0, 0, 490, 1000 };
-				destinationRect = { position.x, position.y, width, height };
-			}
-			texture = rocket_tex;
-			textureName = PlayerTex::Rocket;
-			break;
-
-		case (PlayerTex::ForceField):
-			if (textureName == PlayerTex::Rocket)
-			{
-				width = 105;
-				height = 105;
-				position.x -= (width - 49) / 2;
-				position.y -= (height - 100) / 2;
-				sourceRect = { 0, 0, 1050, 1050 };
-				destinationRect = { position.x, position.y, width, height };
-			}
-			texture = force_field_tex;
-			textureName = PlayerTex::ForceField;
-			break;
-
-		case (PlayerTex::none):
-			texture = nullptr;
-			textureName = PlayerTex::none;
-			break;
-
-		default:
-			break;
+			width = 49;
+			height = 100;
+			// Repositioning the Player to align rockets from both textures
+			position.x -= (width - 105) / 2;
+			position.y -= (height - 105) / 2;
+			sourceRect = { 0, 0, 490, 1000 };
+			destinationRect = { position.x, position.y, width, height };
 		}
+			
+		if (!spaceTexture)
+			texture = rocket_tex;
+		else
+			texture = rocket_white_tex;
+			
+		textureName = PlayerTex::Rocket;
+		break;
+
+	case (PlayerTex::ForceField):
+		if (textureName == PlayerTex::Rocket)
+		{
+			width = 105;
+			height = 105;
+			// Repositioning the Player to align rockets from both textures
+			position.x -= (width - 49) / 2;
+			position.y -= (height - 100) / 2;
+			sourceRect = { 0, 0, 1050, 1050 };
+			destinationRect = { position.x, position.y, width, height };
+		}
+			
+		if (!spaceTexture)
+			texture = force_field_tex;
+		else
+			texture = force_field_white_tex;
+			
+		textureName = PlayerTex::ForceField;
+		break;
+
+	case (PlayerTex::none):
+		texture = nullptr;
+		textureName = PlayerTex::none;
+		break;
+
+	default:
+		break;
 	}
 }

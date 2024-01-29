@@ -24,6 +24,12 @@ void Entity::update(const unsigned int& frame)
 void Entity::handleCollision()
 {} // Method ment to be overridden
 
+void Entity::applySpaceTexture()
+{} // Method ment to be overridden
+
+void Entity::disableSpaceTexture()
+{} // Method ment to be overridden
+
 void Entity::move()
 {
 	position.x += velocity.x * speed.x;

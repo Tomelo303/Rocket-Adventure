@@ -11,7 +11,9 @@ Boost::Boost(int y)
 
 	// Load all textures
 	speed_boost_tex = Texture::createTexture("../Assets/speed_boost.png");
+	speed_boost_white_tex = Texture::createTexture("../Assets/speed_boost_white.png");
 	force_field_boost_tex = Texture::createTexture("../Assets/force_field_boost.png");
+	force_field_boost_white_tex = Texture::createTexture("../Assets/force_field_boost_white.png");
 
 	// Set values regarding position and texture
 	position.y = y;
@@ -25,7 +27,9 @@ Boost::~Boost()
 {
 	// Destroy saved textures
 	SDL_DestroyTexture(speed_boost_tex);
+	SDL_DestroyTexture(speed_boost_white_tex);
 	SDL_DestroyTexture(force_field_boost_tex);
+	SDL_DestroyTexture(force_field_boost_white_tex);
 	std::cout << "Boost destroyed. ";
 }
 
@@ -54,6 +58,19 @@ void Boost::handleCollision()
 {
 	generateSpawnProperties();
 	placeAboveWindow(5 * Game::height, 10 * Game::height);
+	hidden = true;
+}
+
+void Boost::applySpaceTexture()
+{
+	spaceTexture = true;
+	applyTexture(textureName);
+}
+
+void Boost::disableSpaceTexture()
+{
+	spaceTexture = false;
+	applyTexture(textureName);
 }
 
 void Boost::generateSpawnProperties()
@@ -71,28 +88,31 @@ void Boost::generateSpawnProperties()
 
 void Boost::applyTexture(BoostTex tex)
 {
-	if (textureName != tex)
+	// Apply proper texture and its corresponding name
+	switch (tex)
 	{
-		// Apply proper texture and its corresponding name
-		switch (tex)
-		{
-		case (BoostTex::SpeedBoost):
+	case (BoostTex::SpeedBoost):
+		if (!spaceTexture)
 			texture = speed_boost_tex;
-			textureName = BoostTex::SpeedBoost;
-			break;
+		else
+			texture = speed_boost_white_tex;
+		textureName = BoostTex::SpeedBoost;
+		break;
 
-		case (BoostTex::ForceFieldBoost):
+	case (BoostTex::ForceFieldBoost):
+		if (!spaceTexture)
 			texture = force_field_boost_tex;
-			textureName = BoostTex::ForceFieldBoost;
-			break;
+		else
+			texture = force_field_boost_white_tex;
+		textureName = BoostTex::ForceFieldBoost;
+		break;
 
-		case (BoostTex::none):
-			texture = nullptr;
-			textureName = BoostTex::none;
-			break;
+	case (BoostTex::none):
+		texture = nullptr;
+		textureName = BoostTex::none;
+		break;
 
-		default:
-			break;
-		}
+	default:
+		break;
 	}
 }

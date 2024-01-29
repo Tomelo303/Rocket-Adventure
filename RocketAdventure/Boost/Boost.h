@@ -18,15 +18,19 @@ class Boost : public Entity
 	~Boost();
 
 	void update(const unsigned int& frame) override;  // How the Boost should update with every game frame
-	void handleCollision() override;		 // How the Boost should update after it collided with other objects
-	const BoostTex& getTextureName() const { return textureName; }
+	void handleCollision() override;    // How the Boost should update after it collided with other objects
+	void applySpaceTexture() override;  // Apply textures used in space
+	void disableSpaceTexture() override;
+	BoostTex getTextureName() const { return textureName; }
 
   private:
 	  void generateSpawnProperties();  // Assign a random x coordinate and appropriate texture and direction of movement
 	  void applyTexture(BoostTex tex);
 
-	SDL_Texture* speed_boost_tex;		 // Texture of a speed boost
-	SDL_Texture* force_field_boost_tex;  // Texture of a force field boost
+	SDL_Texture* speed_boost_tex;			   // Texture of a speed boost
+	SDL_Texture* speed_boost_white_tex;		   // Texture of a white speed boost
+	SDL_Texture* force_field_boost_tex;		   // Texture of a force field boost
+	SDL_Texture* force_field_boost_white_tex;  // Texture of a white force field boost
 	BoostTex textureName = BoostTex::none;
 	bool hidden = true;	 // Is the Boost below or above the game window
 };
