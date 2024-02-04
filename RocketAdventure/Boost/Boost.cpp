@@ -80,7 +80,7 @@ void Boost::generateSpawnProperties()
 	// Get a random variant
 	int variant = (rand() % 100) + 1;  // Get a random number from range [1; 100]
 
-	if (variant <= 40)
+	if (variant <= 60)
 		applyTexture(BoostTex::SpeedBoost);
 	else
 		applyTexture(BoostTex::ForceFieldBoost);

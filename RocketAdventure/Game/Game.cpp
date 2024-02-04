@@ -1,18 +1,9 @@
 #include "Game.h"
 #include "../Collision/Collision.h"
-#include "../Text/Text.h"
 
 #include <iostream>
 
 
-Player* player = nullptr;
-Player* player2 = nullptr;
-Obstacle* obstacle = nullptr;
-Boost* boost = nullptr;
-Background* background = nullptr;
-Text* score_text = nullptr;
-Text* high_score_text = nullptr;
-Text* force_field_text = nullptr;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
@@ -42,31 +33,21 @@ Game::Game(const char* title, int x, int y, bool two_players_mode)
 		// Initialising game entities
 		if (secondPlayer)
 		{
-			player = new Player(width / 2 - 50, height - 200, false);
+			player1 = new Player(width / 2 - 50, height - 200, false);
 			player2 = new Player(width / 2 + 50, height - 200, true);
 		}
 		else
 		{
-			player = new Player(width / 2, height - 200, false);
+			player1 = new Player(width / 2, height - 200, false);
 		}
-
 		obstacle = new Obstacle(-height);
 		boost = new Boost(-3 * height);
 		background = new Background();
 
 		// Initialising text objects
-		score_text = new Text("../Assets/Minecraftia.ttf");
-		score_text->setFontSize(30);
-		score_text->setFontColor(FontColor::Red);
-		
-		high_score_text = new Text("../Assets/Minecraftia.ttf");
-		high_score_text->setFontSize(30);
-		high_score_text->setFontColor(FontColor::Black);
-		
-		force_field_text = new Text("../Assets/Minecraftia.ttf");
-		force_field_text->setFontSize(20);
-		force_field_text->setFontColor(FontColor::Blue);
-
+		score_text = new Text("../Assets/Minecraftia.ttf", 30, FontColor::Red);
+		high_score_text = new Text("../Assets/Minecraftia.ttf", 30, FontColor::Black);
+		force_field_text = new Text("../Assets/Minecraftia.ttf", 20, FontColor::Blue);
 
 		running = true;
 	}
@@ -80,7 +61,7 @@ Game::~Game()
 {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
-	delete player;
+	delete player1;
 	if (secondPlayer)
 		delete player2;
 	delete obstacle;
@@ -111,8 +92,7 @@ void Game::handleEvents()
 	}
 
 	// Handle events regarding game entities
-	player->handleEvents();
-	
+	player1->handleEvents();
 	if (secondPlayer)
 		player2->handleEvents();
 }
@@ -120,56 +100,57 @@ void Game::handleEvents()
 void Game::update()
 {
 	// Update game entities
-	player->update(frame);
-	
+	player1->update(frame);
 	if (secondPlayer)
 		player2->update(frame);
 	
 	if (obstacle->getTextureName() != ObstacleTex::UFO)  // After obstacle turns into a UFO change speed only when player does
 		background->setSpeed(obstacle->getSpeed().y);  // Ensure background has the same speed as Obstacle
-	
 	obstacle->update(frame);
+
 	boost->update(frame);
 	background->update(frame);
 	
-	// Handle collisions
+	// Handle collision with Obstacle
 	if (playerCollision)
 	{
 		if (secondPlayer)
 		{
-			handleCollisionOf(player, obstacle, player2);
-			handleCollisionOf(player2, obstacle, player);
+			handleCollisionOf(player1, obstacle, player2);
+			handleCollisionOf(player2, obstacle, player1);
 		}
 		else
-			handleCollisionOf(player, obstacle);
+		{
+			handleCollisionOf(player1, obstacle);
+		}
 	}
 
+	// Handle collision with Boost
 	if (secondPlayer)
 	{
-		handleCollisionOf(player, boost, player2);
-		handleCollisionOf(player2, boost, player);
+		handleCollisionOf(player1, boost, player2);
+		handleCollisionOf(player2, boost, player1);
 	}
 	else
-		handleCollisionOf(player, boost);
+	{
+		handleCollisionOf(player1, boost);
+	}
 
 	// Turn the force field off and activate the collision back
-	if (frame - forceFieldStart == forceFieldDuration && playerCollision == false)
+	if (frame - forceFieldStart == Boost::forceFieldDuration && playerCollision == false)
 	{
-		player->forceFieldOff();
-
+		player1->forceFieldOff();
 		if (secondPlayer)
 			player2->forceFieldOff();
 
 		playerCollision = true;
 	}
 
-	frame++;
-
 	// Calculate score
 	if (obstacle->getTextureName() != ObstacleTex::UFO)
-		score += (player->getSpeed().y * obstacle->getSpeed().y) / 15;
+		score += (player1->getSpeed().y * obstacle->getSpeed().y) / 15;
 	else
-		score += (player->getSpeed().y * obstacle->getSpeed().x) / 15 + 5;
+		score += (player1->getSpeed().y * obstacle->getSpeed().x) / 15 + 5;
 
 	// Handle darkening of the screen
 	if (frame == spaceStart + transitionDuration - darkeningFactor)
@@ -186,13 +167,12 @@ void Game::update()
 
 		if (darkeningFactor == 250)
 		{
-			player->applySpaceTexture();
-
+			player1->applySpaceTexture();
 			if (secondPlayer)
 				player2->applySpaceTexture();
 
 			boost->applySpaceTexture();
-			high_score_text->setFontColor(FontColor::White);
+			high_score_text->setColor(FontColor::White);
 		}
 	}
 	else if (darkening && darkeningFactor < 0)
@@ -200,7 +180,13 @@ void Game::update()
 		darkening = false;
 	}
 
-	//std::cout << "Frame #" << playerPoints << "\n";
+	// Update the text
+	if (!playerCollision)
+		force_field_text->setText("Force field: ", (static_cast<double>(forceFieldStart) - static_cast<double>(frame)) / static_cast<double>(Boost::forceFieldDuration) * 100 + 100, "%");
+
+	frame++;
+	
+	//std::cout << "Frame #" << frame << "\n";
 }
 
 void Game::render()
@@ -211,15 +197,16 @@ void Game::render()
 	background->render();
 	obstacle->render();
 
+	player1->render();
 	if (secondPlayer)
 		player2->render();
 
-	player->render();
 	boost->render();
+
 	high_score_text->display(20, height - 20 - high_score_text->height(), "High score: ", highScore);
 	score_text->display(20, height - 70 - score_text->height(), "Score: ", score);
 	if(!playerCollision)
-		force_field_text->display(20, height - 120 - force_field_text->height(), "Force field: ", (static_cast<double>(forceFieldStart) - static_cast<double>(frame)) / static_cast<double>(forceFieldDuration) * 100 + 100, "%");
+		force_field_text->display(20, height - 120 - force_field_text->height());
 	SDL_RenderPresent(renderer);
 }
 
@@ -240,14 +227,14 @@ void Game::handleCollisionOf(Player* player, Obstacle* obstacle)
 		if (darkeningFactor < 500)
 		{
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-			high_score_text->setFontColor(FontColor::Black);
+			high_score_text->setColor(FontColor::Black);
 		}
 		frame = 0;
 		darkeningFactor = 500;
 		if (highScore < score)
 			highScore = score;
 		score = 0;
-		std::cout << "\nGame restarted.\n\n";
+		std::cout << "\nGame restarted.\n";
 	}
 }
 
@@ -270,14 +257,14 @@ void Game::handleCollisionOf(Player* player1, Obstacle* obstacle, Player* player
 		if (darkeningFactor < 500)
 		{
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-			high_score_text->setFontColor(FontColor::Black);
+			high_score_text->setColor(FontColor::Black);
 		}
 		frame = 0;
 		darkeningFactor = 500;
 		if (highScore < score)
 			highScore = score;
 		score = 0;
-		std::cout << "Game restarted.\n\n";
+		std::cout << "\nGame restarted.\n";
 	}
 }
 

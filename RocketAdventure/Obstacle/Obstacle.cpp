@@ -56,7 +56,7 @@ void Obstacle::update(const unsigned int& frame)
 			turnIntoUFO = false;  // Turn this flag off so this part of the code never repeates
 			
 			velocity = 0;  // Stop the Obstacle's movement
-			std::cout << "Obstacle's movement stopped\n";
+			std::cout << "Obstacle's movement stopped.\n";
 			stopped = true;
 		}
 
@@ -105,7 +105,7 @@ void Obstacle::update(const unsigned int& frame)
 		speed.y = 4;	  // Set a default in y axis speed for a UFO
 		velocity.y = 1;	  // Resume the Obtacle's downwards movement
 		stopped = false;  // Turn this flag off to let the Obstacle generate new starting position and move
-		std::cout << "Obstacle's movement resumed\n";
+		std::cout << "Obstacle's movement resumed.\n";
 	}
 
 	//std::cout << "Obstacle is now on " << position << " coordinates\n";

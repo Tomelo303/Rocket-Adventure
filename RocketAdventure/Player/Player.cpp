@@ -2,7 +2,7 @@
 #include "../Game/Game.h"
 
 
-Player::Player(int x, int y, bool secondPlayer)
+Player::Player(int x, int y, bool second_player)
 {
 	// Set values regarding size, position and movement
 	width = 49;
@@ -22,9 +22,9 @@ Player::Player(int x, int y, bool secondPlayer)
 	sourceRect = { 0, 0, 490, 1000 };
 	destinationRect = { position.x, position.y, width, height };
 
-	this->secondPlayer = secondPlayer;
+	secondPlayer = second_player;
 
-	if (this->secondPlayer)
+	if (secondPlayer)
 		std::cout << "Player 2 initialized.\n";
 	else
 		std::cout << "Player initialized.\n";
@@ -48,8 +48,8 @@ void Player::handleEvents()
 {
 	key = Game::event.key.keysym.sym;  // Get the keycode of the key that is being pressed
 
-	if (key != 0 && ( (key == SDLK_w || key == SDLK_s || key == SDLK_a || key == SDLK_d) 
-				   || (key == SDLK_UP || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT) ))
+	if (key != 0 && (key == SDLK_w || key == SDLK_s || key == SDLK_a || key == SDLK_d
+				  || key == SDLK_UP || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT))
 	{
 		// Prevent setting the previous key keycode to 0
 		if (currKey != 0)

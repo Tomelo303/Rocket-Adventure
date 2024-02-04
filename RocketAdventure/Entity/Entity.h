@@ -12,14 +12,17 @@ class Entity
 	~Entity();
 
 	virtual void update(const unsigned int& frame);  // How the Entity should update with every game frame
-	virtual void handleCollision();    // How the Entity should update after it collided with other objects
-	virtual void applySpaceTexture();  // Apply textures used in space
-	virtual void disableSpaceTexture();
+	virtual void handleCollision();      // How the Entity should update after it collided with other objects
+	
+	virtual void applySpaceTexture();    // Apply textures used in space
+	virtual void disableSpaceTexture();  // Disable textures used in space
+	
 	virtual void addSpeed(int increment) { speed += increment; }
 	virtual void setSpeed(int speed) { this->speed = speed; }
 	virtual void setSpeed(Vector2 speed) { this->speed = speed; }
 	virtual Vector2 getSpeed() const { return speed; }
 	const SDL_Rect& getRect() const { return destinationRect; }
+	
 	void render();  // Display the changes after an update
 
   protected:
@@ -38,7 +41,6 @@ class Entity
 	SDL_Texture* texture = nullptr;
 	SDL_Rect sourceRect = { 0, 0, 0, 0 };  // Sets which part of the texture to load
 	SDL_Rect destinationRect = { 0, 0, 0, 0 };  // Sets where and in what scale the loaded texture will be
-	bool spaceTexture = false;  // Whether change to texture used in space or not
 };
 
 #endif // ENTITY_H

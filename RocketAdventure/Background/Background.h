@@ -28,7 +28,7 @@ class Background : public Entity
 	SDL_Texture* clouds_tex;  // Texture of clouds
 	SDL_Texture* stars_tex;	  // Texture of stars
 	BackgroundTex textureName = BackgroundTex::none;
-	bool transition = false;  // Is the transition from clouds to stars incoming
+	bool transition = false;  // Transition from clouds to stars incoming
 };
 
 #endif // BACKGROUND_H

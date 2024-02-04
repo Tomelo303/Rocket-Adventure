@@ -20,8 +20,8 @@ class Obstacle : public Entity
 
 	void update(const unsigned int& frame) override;  // How the Obstacle should update with every game frame
 	void handleCollision() override;  // How the Obstacle should update after it collided with other objects
-	ObstacleTex getTextureName() const { return textureName; }
 	void addSpeed(int increment) override { speed.y += increment; }
+	ObstacleTex getTextureName() const { return textureName; }
 
   private:
 	void bounceFromWalls();  // Change the direction in x axis if Obstacle hits the vertical boundry of the game window
@@ -32,10 +32,10 @@ class Obstacle : public Entity
 	SDL_Texture* plane_l_tex;  // Texture of a plane facing the left side
 	SDL_Texture* ufo_tex;	   // Texture of a UFO
 	ObstacleTex textureName = ObstacleTex::none;
-	bool hidden = true;		   // Is the Obstacle below or above the game window
-	bool turnIntoUFO = false;  // Is the change into a UFO needed
-	bool stopped = false;	   // Is the Obstacle's movement stopped
-	Vector2 increaseSpeed = Vector2(false, false);  // Is the increase of speed in x or y axis needed
+	bool hidden = true;		   // Obstacle is below or above the game window
+	bool turnIntoUFO = false;  // Change into a UFO needed
+	bool stopped = false;	   // Obstacle's movement stopped
+	Vector2 increaseSpeed = Vector2(false, false);  // Increase of speed in x or y axis needed
 };
 
 #endif // OBSTACLE_H
