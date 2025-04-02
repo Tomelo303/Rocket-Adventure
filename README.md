@@ -1,19 +1,11 @@
 # RocketAdventure
 
-Gra, w której gracz wciela się w rolę pilota rakiety. Jego celem jest wznieść się jak najwyżej ponad ziemię, zanim skończy się paliwo. Po drodzę gracz musi unikać niebezpieczeństw, które zagrażają powodzeniu misji oraz zbierać bonusy, które tymczasowo ulepszają rakietę. Gracz będzie nagradzany walutą, za którą będzie mógł na stałe ulepszyć swój pojazd oraz kupić nowe części.
+A small 2D game that uses SDL2 where player(s) control a rocket.
 
-Harmonogram:
-Okres 1. (6.11-20.11):
-Skonfigurowanie projektu z biblioteką SDL. Stworzenie klasy Game inicjalizującej grę, obsługującej zdarzenia, aktualizującej okno gry oraz poprawnie wyłączającej program.
+Their mission is to fly as high as possible in the shortest amount of time, whilst avoiding obstacles and collecting boosts, such as a force shield and an improvement to the rocket's agility.
 
-Okres 2. (20.11-4.12):
-Stworzenie klasy Player umożliwiającej graczowi poruszanie się.
+Game gets progressively harder as the player has less time to react and if they manage to reach the space, they need to avoid a harder type of obstacle.
 
-Okres 3. (4.12-18.12):
-Dodanie przeszkód i bonusów oraz dostosowanie częstości ich pojawiania się, aby zapewnić stopniowe zwiększenie się trudności gry.
+The game can be played by up to two players, one of them uses WSAD and the other uses arrow keys.
 
-Okres 4. (18.12-15.01):
-Dodanie menu części rakiety i ich ulepszeń. Stworzenie ekonomii gry, tzn. ustalenie cen części i ulepszeń, wysokości nagród, które gracz będzie otrzymywać za każdy lot.
-
-Okres 5. (15.01-29.01):
-Testowanie.
+All of the graphics (which are not present in this repository) were made by myself using graphics tablet.
